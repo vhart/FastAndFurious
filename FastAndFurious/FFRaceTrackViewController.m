@@ -2,7 +2,12 @@
 #import "FFRaceCar.h"
 #import "FastAndFurious-Swift.h"
 
-float const trackLength = 100;
+float const trackLength = 200;
+float const carLength = 50;
+float const laneSpacer = 10;
+float const startingYValue = 100;
+float const finishLineWidth = 20;
+float const startingLineWidth = 2;
 
 @interface FFRaceTrackViewController () <RaceTrackObservable>
 
@@ -17,6 +22,8 @@ float const trackLength = 100;
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setUpRaceTrack];
+    [self setUpStartingLine];
+    [self setUpFinishLine];
     [self setUpRacecarViews];
     [self.raceTrack startRace];
 }
@@ -29,31 +36,73 @@ float const trackLength = 100;
                                        ];
     [self setUpRacecarsForIdentifiersWithCars:raceCars];
     self.raceTrack = [[RaceTrack alloc] initWithRaceCars:raceCars
-                                                      observer:self];
+                                             trackLength:trackLength
+                                                observer:self];
 }
 
 - (void)setUpRacecarsForIdentifiersWithCars:(NSArray <FFRacecar *> *)cars {
-    NSMutableDictionary <NSString *, FFRacecar *> *carsForId = [NSMutableDictionary new];
+    NSMutableDictionary<NSString *, FFRacecar *> *carsForId = [NSMutableDictionary new];
     for (FFRacecar *car in cars) {
         carsForId[car.racecarID] = car;
     }
     self.racecarsForIdentifiers = carsForId.copy;
 }
 
+- (void)setUpStartingLine {
+    NSInteger numberOfCars = self.racecarsForIdentifiers.count;
+    float lineLength = carLength * numberOfCars + (numberOfCars - 1) * laneSpacer;
+    UIView *line = [[UIView alloc] initWithFrame:
+                    CGRectMake(carLength, startingYValue, startingLineWidth, lineLength)];
+    [line setBackgroundColor:[UIColor blackColor]];
+    [self.view addSubview:line];
+}
+
+- (void)setUpFinishLine {
+    NSInteger numberOfCars = self.racecarsForIdentifiers.count;
+    float lineLength = carLength * numberOfCars + (numberOfCars - 1) * laneSpacer;
+    UIView *finishLine = [[UIView alloc] initWithFrame:
+                          CGRectMake(CGRectGetWidth(self.view.frame) - finishLineWidth,
+                                                                  startingYValue,
+                                                                  finishLineWidth,
+                                                                  lineLength)];
+    NSInteger numberOfSquares = 0;
+    float currentY = 0;
+    float rectHeight = lineLength / 10;
+    while (numberOfSquares != 10) {
+        float x = (numberOfSquares % 2 == 0)? 0 : finishLineWidth / 2;
+        UIView *checker = [[UIView alloc]initWithFrame:
+                           CGRectMake(x, currentY, finishLineWidth / 2, rectHeight)];
+
+        [checker setBackgroundColor:[UIColor grayColor]];
+        [finishLine addSubview:checker];
+
+        currentY += rectHeight;
+        numberOfSquares += 1;
+    }
+    [self.view addSubview:finishLine];
+}
+
 - (void)setUpRacecarViews {
-    float currentY = 100;
+    float currentY = startingYValue;
     NSMutableDictionary<NSString *, UIView *> *viewsForIdentifiers = [NSMutableDictionary new];
 
     for (NSString *identifier in self.racecarsForIdentifiers.allKeys) {
-        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, currentY, 50, 50)];
+        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, currentY, carLength, carLength)];
         [view setBackgroundColor:[UIColor redColor]];
         viewsForIdentifiers[identifier] = view;
         [self.view addSubview:view];
 
-        currentY += 60;
+        currentY += (carLength + laneSpacer);
     }
 
     self.viewsForIdentifiers = viewsForIdentifiers.copy;
+}
+
+- (void)removeRacecarViews {
+    for (UIView *view in self.viewsForIdentifiers.allValues) {
+        [view removeFromSuperview];
+    }
+    self.viewsForIdentifiers = nil;
 }
 
 // MARK: RaceTrackObservable
@@ -63,37 +112,38 @@ float const trackLength = 100;
         for (NSString *identifier in distancesForIdentifiers.allKeys) {
             UIView *view = self.viewsForIdentifiers[identifier];
             float distanceTraveled = distancesForIdentifiers[identifier].floatValue;
-            float xIncrease = distanceTraveled / trackLength * self.view.frame.size.width;
-            CGPoint newOrigin = CGPointMake(view.frame.origin.x + xIncrease,
+            float newX = distanceTraveled / trackLength * CGRectGetWidth(self.view.frame);
+            CGPoint newOrigin = CGPointMake(newX,
                                             view.frame.origin.y);
-            view.frame = CGRectMake(newOrigin.x
-                                    ,newOrigin.y,
+            view.frame = CGRectMake(newOrigin.x,
+                                    newOrigin.y,
                                     view.frame.size.width,
                                     view.frame.size.height);
 
         }
     } completion:^(BOOL finished) {
-        NSString *tentativeWinner = [self idForWinner];
-        if (tentativeWinner) {
-            [self.raceTrack endRace];
+        if (self.raceTrack.winnerExists) {
+            [self presentWinnerAlertForWinner:self.raceTrack.winnersIdentifier];
         }
     }];
 }
 
-- (NSString *)idForWinner {
-    NSString *idOfFurthest;
-    float furthestX = 0;
-    for (NSString *identifier in self.viewsForIdentifiers.allKeys) {
-        UIView *view = self.viewsForIdentifiers[identifier];
-        float x = view.frame.origin.x;
-        float finishLineXValue = self.view.frame.size.width - view.frame.size.width;
-        if (x >= finishLineXValue && x >= furthestX) {
-            idOfFurthest = identifier;
-            furthestX = x;
-        }
-    }
+- (void)presentWinnerAlertForWinner:(NSString *)winner {
+    NSString *message = [NSString stringWithFormat:@"%@ has won!", winner];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Winner!"
+                                                                   message:message
+                                preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *raceAgain = [UIAlertAction actionWithTitle:@"Race Again!"
+                                                 style:UIAlertActionStyleDefault
+                                               handler:^(UIAlertAction * _Nonnull action) {
+                                                       [self removeRacecarViews];
+                                                       [self setUpRacecarViews];
+                                                       [self.raceTrack reset];
+                                                       [self.raceTrack startRace];
+                                               }];
+    [alert addAction:raceAgain];
+    [self presentViewController:alert animated:YES completion:nil];
 
-    return idOfFurthest;
 }
 
 @end
