@@ -89,6 +89,7 @@ float const trackLength = 100;
         float finishLineXValue = self.view.frame.size.width - view.frame.size.width;
         if (x >= finishLineXValue && x >= furthestX) {
             idOfFurthest = identifier;
+            furthestX = x;
         }
     }
 

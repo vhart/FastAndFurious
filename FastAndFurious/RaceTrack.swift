@@ -4,7 +4,7 @@
 
 class RaceTrack: NSObject {
 
-    let raceCars: [FFRacecar]
+    let raceCars: [FFRaceable]
     weak var observer: RaceTrackObservable?
     fileprivate var timer: Timer?
 
@@ -34,7 +34,7 @@ class RaceTrack: NSObject {
         observer?.raceCarsDidMove(distancesForIdentifiers: distancesForIdentifiers)
     }
 
-    fileprivate func generateNewDistance(for car: FFRacecar) -> Float {
+    fileprivate func generateNewDistance(for car: FFRaceable) -> Float {
 
         enum VariabilityLevel: Float {
             case low = 0.9
