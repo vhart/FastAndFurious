@@ -29,7 +29,7 @@ float const trackLength = 200;
                                        ];
     [self setUpRacecarIdentifiersWithCars:raceCars];
     self.raceTrack = [[RaceTrack alloc] initWithRaceCars:raceCars
-                                                      observer:self];
+                                                observer:self];
 }
 
 - (void)setUpRacecarIdentifiersWithCars:(NSArray <FFRacecar *> *)cars {
@@ -57,11 +57,13 @@ float const trackLength = 200;
 }
 
 // MARK: RaceTrackObservable
-- (void)raceCarsDidMoveWithDistancesForIdentifiers:(NSDictionary<NSString *,NSNumber *> *)distancesForIdentifiers {
-
+- (void)raceCarsDidMoveWithDistancesForIdentifiers:(NSDictionary<NSString *,NSNumber *> *)distancesForIdentifiers
+{
     [UIView animateWithDuration:.2 animations:^{
         for (NSString *identifier in distancesForIdentifiers.allKeys) {
             UIView *view = self.viewsForIdentifiers[identifier];
+            float distance = distancesForIdentifiers[identifier].floatValue;
+            view.frame = CGRectMake(distance, view.frame.origin.y, view.frame.size.width, view.frame.size.height);
         }
     }];
 
