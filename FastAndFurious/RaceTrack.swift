@@ -14,12 +14,11 @@ class RaceTrack: NSObject {
     }
 
     func startRace() {
-        timer = Timer(timeInterval: 1.0,
-                      target: self,
-                      selector: #selector(updateDistances),
-                      userInfo: nil,
-                      repeats: true)
-        timer?.fire()
+        timer = Timer.scheduledTimer(timeInterval: 1.0,
+                                     target: self,
+                                     selector: #selector(updateDistances),
+                                     userInfo: nil,
+                                     repeats: true)
     }
 
     func endRace() {

@@ -2,12 +2,12 @@
 #import "FFRaceCar.h"
 #import "FastAndFurious-Swift.h"
 
-float const trackLength = 200;
+float const trackLength = 100;
 
 @interface FFRaceTrackViewController () <RaceTrackObservable>
 
 @property (nonatomic, strong) RaceTrack *raceTrack;
-@property (nonatomic, strong) NSArray<NSString *> *racecarIdentifiers;
+@property (nonatomic, strong) NSDictionary<NSString *, FFRacecar *> *racecarsForIdentifiers;
 @property (nonatomic, strong) NSDictionary<NSString *, UIView *> *viewsForIdentifiers;
 
 @end
@@ -27,24 +27,24 @@ float const trackLength = 200;
                                        [[FFRacecar alloc] initWithTopSpeed:150 durability:60],
                                        [[FFRacecar alloc] initWithTopSpeed:140 durability:80]
                                        ];
-    [self setUpRacecarIdentifiersWithCars:raceCars];
+    [self setUpRacecarsForIdentifiersWithCars:raceCars];
     self.raceTrack = [[RaceTrack alloc] initWithRaceCars:raceCars
                                                       observer:self];
 }
 
-- (void)setUpRacecarIdentifiersWithCars:(NSArray <FFRacecar *> *)cars {
-    NSMutableArray <NSString *> *identifiers = [NSMutableArray new];
+- (void)setUpRacecarsForIdentifiersWithCars:(NSArray <FFRacecar *> *)cars {
+    NSMutableDictionary <NSString *, FFRacecar *> *carsForId = [NSMutableDictionary new];
     for (FFRacecar *car in cars) {
-        [identifiers addObject:car.racecarID];
+        carsForId[car.racecarID] = car;
     }
-    self.racecarIdentifiers = identifiers.copy;
+    self.racecarsForIdentifiers = carsForId.copy;
 }
 
 - (void)setUpRacecarViews {
-    float currentY = 20;
+    float currentY = 100;
     NSMutableDictionary<NSString *, UIView *> *viewsForIdentifiers = [NSMutableDictionary new];
 
-    for (NSString *identifier in self.racecarIdentifiers) {
+    for (NSString *identifier in self.racecarsForIdentifiers.allKeys) {
         UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, currentY, 50, 50)];
         [view setBackgroundColor:[UIColor redColor]];
         viewsForIdentifiers[identifier] = view;
@@ -62,9 +62,37 @@ float const trackLength = 200;
     [UIView animateWithDuration:.2 animations:^{
         for (NSString *identifier in distancesForIdentifiers.allKeys) {
             UIView *view = self.viewsForIdentifiers[identifier];
+            float distanceTraveled = distancesForIdentifiers[identifier].floatValue;
+            float xIncrease = distanceTraveled / trackLength * self.view.frame.size.width;
+            CGPoint newOrigin = CGPointMake(view.frame.origin.x + xIncrease,
+                                            view.frame.origin.y);
+            view.frame = CGRectMake(newOrigin.x
+                                    ,newOrigin.y,
+                                    view.frame.size.width,
+                                    view.frame.size.height);
+
+        }
+    } completion:^(BOOL finished) {
+        NSString *tentativeWinner = [self idForWinner];
+        if (tentativeWinner) {
+            [self.raceTrack endRace];
         }
     }];
+}
 
+- (NSString *)idForWinner {
+    NSString *idOfFurthest;
+    float furthestX = 0;
+    for (NSString *identifier in self.viewsForIdentifiers.allKeys) {
+        UIView *view = self.viewsForIdentifiers[identifier];
+        float x = view.frame.origin.x;
+        float finishLineXValue = self.view.frame.size.width - view.frame.size.width;
+        if (x >= finishLineXValue && x >= furthestX) {
+            idOfFurthest = identifier;
+        }
+    }
+
+    return idOfFurthest;
 }
 
 @end
