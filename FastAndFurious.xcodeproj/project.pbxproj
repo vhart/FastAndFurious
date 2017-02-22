@@ -53,11 +53,11 @@
 		D501AB2F1E5D1F4100CA073B /* FastAndFuriousUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FastAndFuriousUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D501AB331E5D1F4100CA073B /* FastAndFuriousUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FastAndFuriousUITests.m; sourceTree = "<group>"; };
 		D501AB351E5D1F4100CA073B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		D501AB411E5D200B00CA073B /* FFRaceable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FFRaceable.h; sourceTree = "<group>"; };
 		D501AB421E5D21BC00CA073B /* FFRacecar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFRacecar.h; sourceTree = "<group>"; };
 		D501AB431E5D21BC00CA073B /* FFRacecar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFRacecar.m; sourceTree = "<group>"; };
 		D501AB451E5D23F500CA073B /* FastAndFurious-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FastAndFurious-Bridging-Header.h"; sourceTree = "<group>"; };
 		D501AB461E5D23F600CA073B /* RaceTrack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RaceTrack.swift; sourceTree = "<group>"; };
+		DC5F7AEC1E5D63F90050A948 /* FFRaceable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFRaceable.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,7 +112,7 @@
 				D501AB121E5D1F4100CA073B /* AppDelegate.m */,
 				D501AB141E5D1F4100CA073B /* FFRaceTrackViewController.h */,
 				D501AB151E5D1F4100CA073B /* FFRaceTrackViewController.m */,
-				D501AB411E5D200B00CA073B /* FFRaceable.h */,
+				DC5F7AEC1E5D63F90050A948 /* FFRaceable.h */,
 				D501AB421E5D21BC00CA073B /* FFRacecar.h */,
 				D501AB431E5D21BC00CA073B /* FFRacecar.m */,
 				D501AB461E5D23F600CA073B /* RaceTrack.swift */,
@@ -542,6 +542,7 @@
 				D501AB3A1E5D1F4100CA073B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		D501AB3B1E5D1F4100CA073B /* Build configuration list for PBXNativeTarget "FastAndFuriousTests" */ = {
 			isa = XCConfigurationList;
@@ -550,6 +551,7 @@
 				D501AB3D1E5D1F4100CA073B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		D501AB3E1E5D1F4100CA073B /* Build configuration list for PBXNativeTarget "FastAndFuriousUITests" */ = {
 			isa = XCConfigurationList;
@@ -558,6 +560,7 @@
 				D501AB401E5D1F4100CA073B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
