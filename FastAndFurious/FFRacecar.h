@@ -3,8 +3,4 @@
 
 @interface FFRacecar : NSObject <FFRaceable>
 
-
-- (instancetype)initWithTopSpeed:(float)topSpeed
-                      durability:(float)durablility;
-
 @end

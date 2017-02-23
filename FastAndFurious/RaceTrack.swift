@@ -1,6 +1,4 @@
-@objc protocol RaceTrackObservable {
-    func raceCarsDidMove(distancesForIdentifiers: [String: Float])
-}
+@objc protocol RaceTrackObservable {}
 
 class RaceTrack: NSObject {
 
@@ -10,27 +8,22 @@ class RaceTrack: NSObject {
         case ended
     }
 
-    let raceCars: [FFRaceable]
-    let trackLength: Float
-    weak var observer: RaceTrackObservable?
+    // Raceables
+    // let trackLength: Float
+    // observer
+
     fileprivate var timer: Timer?
     fileprivate var distancesForIdentifiers: [String: Float] = [:]
     fileprivate var status: RaceStatus = .unstarted
 
-    init(raceCars: [FFRacecar], trackLength: Float, observer: RaceTrackObservable) {
-        self.raceCars = raceCars
-        self.trackLength = trackLength
-        self.observer = observer
-        super.init()
-        reset()
+    init() {
+        self.timer = nil
     }
 
+
     func startRace() {
-        timer = Timer.scheduledTimer(timeInterval: 0.15,
-                                     target: self,
-                                     selector: #selector(updateDistances),
-                                     userInfo: nil,
-                                     repeats: true)
+        //Timer
+
         status = .started
     }
 
@@ -42,14 +35,14 @@ class RaceTrack: NSObject {
 
     var winnerExists: Bool {
         return !distancesForIdentifiers.values
-            .filter { $0 >= self.trackLength }
+            .filter { $0 >= 1 /*self.trackLength*/ }
             .isEmpty
     }
 
     var winnersIdentifier: String? {
         guard winnerExists else { return nil }
         return distancesForIdentifiers.map { $0 }
-            .filter { $0.value >= self.trackLength }
+            .filter { $0.value >= 1 /*self.trackLength*/ }
             .sorted { $0.1 < $1.1 }
             .first?
             .key
