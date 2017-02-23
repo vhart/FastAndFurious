@@ -11,4 +11,4 @@ An obj-c app, with some swift components, meant to be used as an obj-c primer fo
 - The view controller can then drop its `[String: FFRacecar]` dictionary.
 - Move the finish line view to its own subclass of `UIView` (in obj-c)
 - Place a `START` label behind the starting line and rotate it 90 degrees. 
-- The views use auto-layout and only allow the app to run in landscape.
+- Have the views use auto-layout and only allow the app to run in landscape.
